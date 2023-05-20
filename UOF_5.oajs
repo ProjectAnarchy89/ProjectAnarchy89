@@ -1,0 +1,1987 @@
+//Autostart scripts after login into the game. Example: Orion.Exec('AutoLootIgnore');
+
+function Autostart()
+{
+  Orion.Print('Welcome to OrionUO assistant Autostart');
+  Orion.Exec('Hide')
+  Orion.Exec('ScanDeaths')
+  Orion.Exec('AutoChugStrength')
+  Orion.Exec('AutoChugAgility')
+  Orion.Exec('AutoBox')
+  Orion.Exec('AutoBoxJournal')
+  Orion.Exec('AutoSeed')
+  Orion.Exec('CatchSerial')
+  //Orion.Exec('AutoRearm')
+}
+
+//--#Potions
+////////////////////////////////////////////////////////////////////////////////////////////
+//Potion Scripts 
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function ApplyPoison(){
+	var PoisonPotion = Orion.FindType('0x0F0A');
+	if ( !PoisonPotion.length) {
+		Orion.Print('poison potion NOT found');
+	}
+	else {
+		Orion.Print('poison potion found');
+		var Rhand = Orion.ObjAtLayer('1');
+		if (Rhand === null  ) {
+			Orion.Print('something appropriate not armed');
+		}
+		else {
+			//Orion.Print('right hand weapon is armed');
+			Orion.UseSkill('Poisoning');
+			Orion.WaitTargetObject(PoisonPotion); 
+			Orion.WaitTargetObject( Rhand.Serial() );
+		}
+	}
+}
+function StartExplosion(){
+	Orion.UseType('0x0F0D');
+	Orion.WaitTargetObject('-1');
+}
+
+function ThrowExplosion(){
+	Orion.UseType('0x0F0D');
+	if ( Orion.FindObject('lasttarget') ){
+		Orion.WaitTargetObject('lasttarget');
+	}
+}
+
+function DrinkRefresh(){
+	if ( Player.Stam() < Player.MaxStam() ) {
+		DisarmLeftHand(); 
+	if (!Orion.FindType('0x0F0B', 'any', 'backpack', 'any', 'any', 'any', true) ){
+		Orion.CharPrint('self', '63', 'refresh potion not found');
+	} 
+		Orion.Say('[doubleclick refreshpotion');
+	}
+	else {
+		Orion.CharPrint('self', '63', 'Stamina is full');
+	}
+}
+
+function DrinkAgilStr(){
+	DisarmLeftHand();
+	Orion.Say('[doubleclick greateragilitypotion');
+	Orion.Wait(600);	
+	Orion.Say('[doubleclick greaterstrengthpotion');	
+}
+
+function DrinkCureHeal(){
+	DisarmLeftHand();
+	if (Player.Poisoned() )
+	if(Orion.InJournal( 'nauseous|pain|', 'my' )) {
+		Orion.CharPrint('self', '33', 'debug: poisoned, drinking cure');
+		Orion.Say('[doubleclick greatercurepotion');
+		Orion.Wait(600);	
+		Orion.ClearJournal();
+	}
+	Orion.CharPrint('self', '33', 'debug: drinking heal');
+	Orion.Say('[doubleclick greaterhealpotion');	
+	Orion.Wait(600);
+}
+
+function DrinkStrength(){
+	if (!Orion.FindType('0x0F09', 'any', 'backpack') ) {
+		Orion.CharPrint('self', '63', 'strength potion not found');
+	} 
+
+	else {
+		var Lhand = Orion.ObjAtLayer('2');
+		if ( Lhand !== null) {
+			Orion.Print('disarming left hand');
+			Orion.MoveItem( Lhand.Serial(), 'all', 'backpack' );
+			Orion.Wait(600);
+		}
+		Orion.Say('[drink greaterstrengthpotion');
+		Orion.Say('[drink strengthpotion');
+		if (Lhand !== null) { 
+			Orion.Wait(600);
+			Orion.Equip(Lhand.Serial());
+		}
+	}
+}
+
+function DisarmLeftHand(){  //this is a sub-function for clearing left hand if needed before drinking a potion
+	var Lhand = Orion.ObjAtLayer('2');
+	if ( Lhand !== null) {
+		Orion.Print('disarming left hand');
+		Orion.MoveItem( Lhand.Serial(), 'all', 'backpack' );
+		Orion.Wait(600);
+	}
+	else {
+		Orion.Print('nothing in left hand to disarm.');
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//Any pot in the backpack
+/////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////M@XIM
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function SimpleDrinkHeal()
+{
+    var weapon = Orion.ObjAtLayer("LeftHand");
+        if (weapon != null)
+        {
+            Orion.Unequip("LeftHand");
+            Orion.Wait(600);
+        }
+        Orion.Say('[drink greaterhealpotion');
+        if (weapon != null)
+        {
+            Orion.Wait(1000);
+            Orion.Equip(weapon.Serial());
+            Orion.Wait(200);
+        }
+}
+
+function SimpleDrinkCure()
+{
+    var weapon = Orion.ObjAtLayer("LeftHand");
+        if (weapon != null)
+        {
+            Orion.Unequip("LeftHand");
+            Orion.Wait(600);
+        }
+        Orion.Say('[drink greatercurepotion');
+        if (weapon != null)
+        {
+            Orion.Wait(1000);
+            Orion.Equip(weapon.Serial());
+            Orion.Wait(200);
+        }
+}
+
+function SimpleDrinkStrength()
+{
+    var weapon = Orion.ObjAtLayer("LeftHand");
+        if (weapon != null)
+        {
+            Orion.Unequip("LeftHand");
+            Orion.Wait(600);
+        }
+        Orion.Say('[drink greaterstrengthpotion');
+        if (weapon != null)
+        {
+            Orion.Wait(1000);
+            Orion.Equip(weapon.Serial());
+            Orion.Wait(200);
+        }
+}
+
+function SimpleDrinkAgility()
+{
+    var weapon = Orion.ObjAtLayer("LeftHand");
+        if (weapon != null)
+        {
+            Orion.Unequip("LeftHand");
+            Orion.Wait(600);
+        }
+        Orion.Say('[drink greateragilitypotion');
+        if (weapon != null)
+        {
+            Orion.Wait(1000);
+            Orion.Equip(weapon.Serial());
+            Orion.Wait(200);
+        }
+}
+
+function SimpleDrinkRefresh()
+{
+    var weapon = Orion.ObjAtLayer("LeftHand");
+        if (weapon != null)
+        {
+            Orion.Unequip("LeftHand");
+            Orion.Wait(600);
+        }
+        Orion.Say('[drink totalrefreshpotion');
+        if (weapon != null)
+        {
+            Orion.Wait(1000);
+            Orion.Equip(weapon.Serial());
+            Orion.Wait(200);
+        }
+}
+
+//--#Misc
+////////////////////////////////////////////////////////////////////////////////////////////
+//Using items
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////+ FastRecall & UseGate
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function ToggleHotkeysOFF() {
+	Orion.LoadHotkeys('none');
+}
+
+function ToggleHotkeysON() {
+	Orion.LoadHotkeys('UOF');
+}
+
+function CheckTalisman() {
+	//Orion.UseObject(['0x43A23925']);
+	Orion.UseObject('0x4148618F ');
+}
+
+function GetInfo() {
+	TextWindow.Clear();
+	Orion.Info();
+}	
+
+function StopAllScripts() {
+	Orion.Terminate('all'); 
+}
+
+function OpenBackpack(){
+	Orion.OpenContainer('backpack');
+}
+
+function OpenPaperdoll(){
+	Orion.OpenPaperdoll('self');
+}
+
+function OpenJournal(){
+	Orion.ShowJournal();
+}
+
+function OpenCorpse() {
+	var corpse = Orion.FindType('0x2006', 'any', 'ground', 'any', '2');
+	if ( !corpse.length) {
+		Orion.CharPrint('self', '906', '-- no corpses nearby --');
+	}
+	else {
+		Orion.UseObject(corpse);
+	}
+}
+
+function UseRightHand() {
+ 	var item = Orion.ObjAtLayer('1');
+       Orion.UseObject(item.Serial());
+}
+
+function hiding() {
+	Orion.UseSkill('hiding');
+}
+
+function continueHeal() {
+	while ( true ) {
+		Orion.UseObject('0x417FD7EF');
+		Orion.WaitTargetObject('0x0002870A');
+		Orion.Wait(11000);
+	}
+}
+
+function UseScissors(){
+	var Scissors = Orion.FindType('0xf9f');
+	Orion.UseObject(Scissors);
+}
+
+function UseReflectScroll() {
+	Orion.UseType('0x1F50');
+}
+
+function TrapPouch() {
+	if (!Orion.FindObject('PouchContainer') ) {
+		Orion.CharPrint('self', '906', 'which container has the pouches?');
+		Orion.AddObject('PouchContainer');
+		while(Orion.HaveTarget()) {
+			Orion.Wait('50');			
+		}
+	}
+	var pouchContainer = Orion.FindObject('PouchContainer');
+	if ( pouchContainer !== null ) {
+		var pouch = Orion.FindType('0x0E79', '0x0000', 'PouchContainer');
+		var n = pouch.length;
+		Orion.CharPrint('self', '906', 'found ' + n + ' pouches to trap'); 
+		for (var i = 0; i < n; ++i) {
+			Orion.Cast('Magic Trap',  pouch[i]);
+			Orion.Say(i);
+			Orion.Wait(2000);
+		}  
+		if ( pouch.length ) 
+			TrapPouch(); 
+	} 
+	else {
+		Orion.CharPrint('self', '906', 'there is no PouchContainer'); 
+	}
+}
+
+function PopPouch() {
+    var pouch = Orion.FindType('0x0E79', '0x0026', 'backpack', 'any',  'any', 'any', true );
+    if ( pouch.length > 1 ) {
+        Orion.CharPrint('self', '906', pouch.length);
+        Orion.UseObject(pouch[0]);
+    }
+    if (pouch.length === 1 ) {
+        Orion.CharPrint('self', '906', 'pouches down to one');
+        Orion.UseObject(pouch[0]);
+        Orion.Cast('Magic Trap');
+        Orion.WaitTargetObject(pouch[0] );
+    }
+    if (pouch.length === 0 ) {
+       Orion.CharPrint('self', '906', 'no trapped pouches -- will try to make one');
+        Orion.Cast('Magic Trap');
+        var pouch = Orion.FindType('0x0E79', 'any','backpack', 'any',  'any', 'any', true );
+        Orion.WaitTargetObject(pouch[0] );
+    }
+}
+
+
+function StunWrestle()
+{
+Orion.UseWrestlingStun();
+Orion.Wait(800);
+Orion.TargetObject("lastattack");
+}
+
+function AddMount()
+{
+    Orion.AddObject('myMount');
+    Orion.Print('-1', 'Target your mount')
+}
+
+function MountAndDismount()
+{
+    if(!Orion.ObjAtLayer('Mount'))
+    {
+        if(!Orion.FindObject('myMount'))
+            AddMount();
+        else
+            Orion.UseObject('myMount');
+    }
+    else
+        Orion.UseObject('self');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////HOTRIDE
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function FastRecall()
+{
+if (Orion.GetSerial('runebook') == '0x00000000')
+{
+Orion.AddObject('runebook');
+        Orion.Print('0x0123', 'Choose your runebook/rune for fast recall.');
+        Orion.Wait(200);
+        while (Orion.HaveTarget())
+        Orion.Wait(1000);
+        Orion.Print('0x0123', 'Bind is added to Lists->Objects.');
+}
+	Orion.Cast('Recall');
+	Orion.WaitTargetObject('runebook');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////M@XIM
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function UseGate()
+{
+    Orion.CancelWaitGump();
+    Orion.WaitGump(Orion.CreateGumpHook(1));
+    if (!Orion.UseFromGround("0x0F6C|0x4BCB", "-1", 2))
+    {
+        Orion.CharPrint(self, 1153, "Gate is too far away!");
+        Orion.CancelWaitGump();
+    }
+}
+
+//--#Equipping
+////////////////////////////////////////////////////////////////////////////////////////////
+//Weapons & Shields
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function ArmWeapon() {
+	if ( !Orion.FindObject('weapon') ) {
+		Orion.CharPrint('self', '63', 'Toggle a weapon to be active first!');
+	}
+	else {
+		var currentRHand = Orion.ObjAtLayer('1') ;
+		if (currentRHand	 !== null ) {
+			var weaponONEserial = Orion.GetSerial('weapon');
+			var currentRHandserial = currentRHand.Serial();
+			if ( weaponONEserial === currentRHandserial) {	
+				//Orion.CharPrint('self', '33', 'weapon ONE is equipped');
+				ArmShield();
+			}
+			else {
+				//Orion.CharPrint('self', '33', 'something else is equipped there');
+				Orion.GetStatus('self');
+				Orion.Cast('Greater Heal');
+				Orion.Wait(50);
+				Orion.Equip('weapon');
+			}
+		}
+		else{
+			Orion.Equip('weapon');
+		}
+	}
+}
+
+function ArmShield() {
+	if ( !Orion.FindObject('shield') ) {
+		Orion.CharPrint('self', '63', 'no shield is set');
+	}
+	else {
+		var currentLHand = Orion.ObjAtLayer('2');
+		if (currentLHand !== null ) {
+			if (currentLHand.Serial() === Orion.GetSerial('shield') ) {
+				Orion.CharPrint('self', '33', 'shield is equipped');
+			}
+			else {
+				Orion.CharPrint('self', '33', 'some other shield is equipped');
+			}
+		}
+		else {
+			Orion.Equip('shield');
+		}
+	}	
+}
+function SetWeapon1(){
+	Orion.RemoveObject('weaponONE');
+	Orion.Print('Target weaponONE');
+	Orion.AddObject('weaponONE');
+	WaitForPlayerToTarget();
+	if ( Orion.FindObject('weaponONE') ) {
+		Orion.CharPrint('self', '2002', 'weaponONE set.');
+	}
+	else {
+	Orion.CharPrint('self', '2002', 'weaponONE not set');
+	}
+}
+function ToggleWeaponONE()
+{
+	if (!Orion.FindObject('weaponONE') )
+	{
+		SetWeapon1();
+	}
+	else
+	{
+		Orion.RemoveObject('weapon');
+		Orion.CharPrint('self', '63', 'Toggled to weaponONE');
+		Orion.AddObject('weapon', 'weaponONE');
+	}
+}
+function SetWeapon2(){
+	Orion.RemoveObject('weaponTWO');
+	Orion.Print('Target weaponTWO');
+	Orion.AddObject('weaponTWO');
+	WaitForPlayerToTarget();
+	if ( Orion.FindObject('weaponTWO') ) {
+		Orion.CharPrint('self', '2002', 'weaponTWO set.');
+	}
+	else {
+	Orion.CharPrint('self', '2002', 'weaponTWO not set');
+	}
+}
+
+function ToggleWeaponTWO()
+{
+	if (!Orion.FindObject('weaponTWO') )
+	{
+		SetWeapon2();
+	}
+	else
+	{
+		Orion.RemoveObject('weapon');
+		Orion.CharPrint('self', '63', 'Toggled to weaponTWO');
+		Orion.AddObject('weapon', 'weaponTWO');
+	}
+}
+
+function SetShield(){
+	Orion.RemoveObject('shield');
+	Orion.Print('Target shield');
+	Orion.AddObject('shield');
+	WaitForPlayerToTarget();
+	if ( Orion.FindObject('shield') ) {
+		Orion.CharPrint('self', '2002', 'shield set.');
+	}
+	else {
+	Orion.CharPrint('self', '2002', 'shield not set');
+	}
+}
+
+//--#SpellCastingFactavi
+////////////////////////////////////////////////////////////////////////////////////////////
+//LastTarget
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function Disruptor(){
+	if (!Orion.HaveTarget() ) {
+		var disruptor = Orion.ObjAtLayer('22');
+		if ( disruptor == null ) {
+			var disruptor = Orion.ObjAtLayer('17');
+		}
+		if ( disruptor != null ) {
+			Orion.Equip(disruptor.Serial() );
+			Orion.CharPrint('self', '906', '-- trying to disrupt --');
+		} else {
+			Orion.CharPrint('self', '906', '--unable to disrupt--')
+		}
+	}
+	else {
+		Orion.CancelTarget();
+	}
+}
+
+function CancelQueue() {
+	Orion.CancelWaitTarget();
+	Orion.CharPrint('self', '906', 'canceling target');
+}
+
+
+function CastTargetedEnemy(spellName) {	 //cast spell with a given name on target
+	if (Orion.HaveTarget() ) {
+		Orion.TargetObject('lasttarget');
+	}
+	else {
+		Orion.Cast(spellName, 'lasttarget');
+	}
+}
+
+function CastSelf(spellName) {
+	Orion.Cast(spellName, 'self');
+}
+
+function SmartHeal() {
+	if ( Player.Poisoned() ) {
+		CastSelf('cure');
+	}
+	else {
+		CastSelf('heal');
+	}
+}
+
+//--#TargettingFactavi
+////////////////////////////////////////////////////////////////////////////////////////////
+//LastTarget
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function FindNearestEnemy()
+{	
+	Orion.Ignore('self');
+	var friends = Orion.GetFriendList();
+	for(var i = 0; i < friends.length; i++) {
+		Orion.Ignore(friends[i]);
+	}
+	var enemy = Orion.FindType('0xFFFFFF', '-1', ground, 'nearest|mobile|live', '14', 'orange|');	
+	if ( !enemy.length )  	{
+//		Orion.Ignore('self');
+//		var friends = Orion.GetFriendList();
+//		for(var i = 0; i < friends.length; i++) {
+//			Orion.Ignore(friends[i]);
+//		}
+//		enemy = Orion.FindType('0xFFFFFF', '-1', ground, 'near|mobile', '18', 'gray|criminal|red|orange|blue');	
+//		if ( !enemy.length )  	{
+			Orion.Print( '-1', 'no enemy found, resetting ignore list');
+			Orion.IgnoreReset();
+			return '';
+//		}
+	}
+	return enemy[0];
+}
+function TargetNextEnemy()
+{
+			var serial = FindNearestEnemy();
+		if(!serial.length) return;
+		var enemy = Orion.FindObject(serial);
+		var notoColor;
+		switch  (enemy.Notoriety() ) {
+			case 1: notoColor = 2119;
+					break;
+			case 6: notoColor = 33;
+					break;
+			default: notoColor = 48;
+		}
+		
+		Orion.CharPrint(self, notoColor, '[Enemy:] ' + enemy.Name() );
+		Orion.RemoveHighlightCharacter(lasttarget);
+		//Orion.CharPrint(enemy.Serial(), '48', enemy.Name());
+        Orion.AddHighlightCharacter(enemy.Serial(), '1152' );
+		Orion.ClientLastTarget(serial);
+		Orion.TargetSystemSerial(serial);
+		Orion.Ignore(serial);        
+	}
+
+function WaitForPlayerToTarget() {
+	while(Orion.HaveTarget()) {
+		Orion.Wait(100);
+	}
+}
+function WaitForTargetCursor() {
+	while (!Orion.HaveTarget())	{
+		Orion.Wait(100);
+		break;
+	}
+}
+function SetEnemy() {
+	Orion.AddObject('templasttarget');
+	WaitForPlayerToTarget();
+	Orion.ClientLastTarget('templasttarget');
+}
+function AttackLastTarget() {
+	Orion.Attack('lasttarget');
+}
+
+function CancelTarget() {
+	var StartTime = Orion.Now();
+	while (true)
+	{
+		if (Orion.HaveTarget() )
+		{
+			Orion.Print('canceling target');
+			Orion.TargetObject('-1');
+			break;
+		}
+		if ( ( Orion.Now() - StartTime) > 4000 ) {
+			Orion.Print('CancelTarget timed out.');
+			break;
+		}
+	}
+}
+
+//--#Healing
+////////////////////////////////////////////////////////////////////////////////////////////
+//Bandages
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////M@XIM
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function AutoHealing()
+{
+    var msg = "You finish applying the bandages|You have been cured of all poisons|You apply the bandages";
+    while (Orion.Count("bandage") && !Player.Dead())
+    {
+        if (Player.Hits() < Player.MaxHits())
+        {
+            Orion.CreateClientMacro("BandageSelf").Play();
+            Orion.WaitJournal(msg, Orion.Now(), Orion.Now() + 20000, "sys");
+            Orion.Wait(100);
+        }
+        else
+        {
+            Orion.Wait(100);
+        }     
+    }
+    if (!Player.Dead())
+    {
+        Orion.CharPrint(self, 1153, "-- no bandages left --");
+    }
+}
+
+function MasterObserver(){
+	var bandageGOING = false;
+	while (!Player.Dead()) {
+		if ( Player.Hits() < Player.MaxHits() ) {
+			if ( bandageGOING == false ) { 
+				Orion.CharPrint(self,2119,'Apply a Bandage!');
+				//Orion.Exec('BandageTimer');
+			}
+		}
+		Orion.Wait(500);
+		if (Orion.InJournal('begin applying', 'sys') ) {
+			Orion.ClearJournal();
+			bandageGOING = true;
+			Orion.CharPrint(self, '906', 'Bandage Started.')
+		}
+		if (Orion.InJournal('finish applying | barely help | You have been cured', 'sys') ) {
+			Orion.ClearJournal();
+			Orion.CharPrint(self, '906', 'Bandage Finished.')
+			bandageGOING = false;
+			Orion.Terminate('BandageTimer');
+		}
+	}
+}
+
+function MasterObserverWBandageTimer(){
+	var bandageGOING = false;
+	while (!Player.Dead()) {
+		if ( Player.Hits() < Player.MaxHits() ) {
+			if ( bandageGOING == false ) { 
+				Orion.CharPrint(self,2119,'Apply a Bandage!');
+				Orion.Exec('BandageTimer');
+			}
+		}
+		Orion.Wait(500);
+		if (Orion.InJournal('begin applying', 'sys') ) {
+			Orion.ClearJournal();
+			bandageGOING = true;
+			Orion.CharPrint(self, '906', 'Bandage Started.')
+		}
+		if (Orion.InJournal('finish applying | barely help | You have been cured', 'sys') ) {
+			Orion.ClearJournal();
+			Orion.CharPrint(self, '906', 'Bandage Finished.')
+			bandageGOING = false;
+			Orion.Terminate('BandageTimer');
+		}
+	}
+}
+
+function BandageTimer() {  
+	Orion.CreateClientMacro('BandageSelf').Play();
+	Orion.Wait(1000);
+	var seconds = 1;
+	while ( !Orion.InJournal('finish applying | barely help', 'sys') ) {
+	    	Orion.CharPrint(self, '906', '-- ' + seconds + ' --');
+      	Orion.Wait(1000);
+      	++seconds;
+	}      
+}
+
+function BandageSelfNOtarget() {  
+	Orion.CreateClientMacro('BandageSelf').Play();
+}
+
+//--#Organizer
+////////////////////////////////////////////////////////////////////////////////////////////
+//Grab, loot, moveItems, Warpack
+/////
+/////
+/////
+/////
+/////***created by Friar Enoch (Factavi)***
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+function GrabItem() {
+	//OpenCorpse();
+	if (!Orion.HaveTarget() )
+	{
+		var toMove = Orion.FindObject('toMove');
+		if( toMove !== null | toMove !== 0 )
+		{
+			Orion.RemoveObject('toMove');
+		}
+		Orion.Print( '-1', 'Target something to grab.');
+		Orion.AddObject('toMove');
+		while(Orion.HaveTarget())
+		{
+			Orion.Wait('50');
+		}
+		toMove = Orion.FindObject('toMove');	
+		if ( toMove !== null ) {
+			Orion.MoveItem( toMove.Serial(), 'all' , backpack);
+		}
+	}
+}
+
+function OrganizeFromList(frombag, tobag, listname, amount) {  //sub function for moving items around
+	var item = Orion.FindList(listname, frombag);
+	if ( item !== null ) {
+		Orion.CharPrint('self', '906', 'moving items');
+		for (var i = 0; i < item.length; i++) {
+			Orion.MoveItem(item[i], amount, tobag);
+			Orion.Wait(700);
+		}
+	}
+	else
+		Orion.CharPrint('self', '906', 'item not found');		
+}
+
+
+
+function OrganizeToBackpack(listname, amount) {
+	var frombag = Orion.FindObject('fromBag');
+	if( frombag !== null | frombag !== 0 )
+	{
+		Orion.RemoveObject('fromBag');
+	}
+	Orion.Print( '-1', 'Target container to move to.');
+	Orion.AddObject('fromBag');
+	while(Orion.HaveTarget())
+	{
+		Orion.Wait('50');
+	}
+	frombag = Orion.FindObject('fromBag');	
+	if ( frombag !== null ) {
+		OrganizeFromList( frombag.Serial(), backpack, listname, amount);
+	}
+}
+
+function OrganizeFromBackpack(listname, amount) {
+	var tobag = Orion.FindObject('toBag');
+	if( tobag !== null | tobag !== 0 )
+	{
+		Orion.RemoveObject('toBag');
+	}
+	Orion.Print( '-1', 'Target container to move from.');
+	Orion.AddObject('toBag');
+	while(Orion.HaveTarget())
+	{
+		Orion.Wait('50');
+	}
+	tobag = Orion.FindObject('toBag');	
+	if ( tobag !== null ) {
+		OrganizeFromList( backpack, tobag.Serial(), listname, amount);
+	}
+}
+
+function OrganizeThisToThat(listname, amount) {
+	Orion.RemoveObject('MoveFrom');
+	Orion.RemoveObject('MoveTo');	
+	
+	if (!Orion.FindObject('MoveFrom') ) {
+		Orion.CharPrint('self', '906', 'select move from bag');
+		Orion.AddObject('MoveFrom');
+		WaitForPlayerToTarget(); 
+	}
+	if (!Orion.FindObject('MoveTo') ) {
+		Orion.CharPrint('self', '906', 'select move to bag');
+		Orion.AddObject('MoveTo');
+		WaitForPlayerToTarget();
+	}
+	if ( 'MoveFrom' !== null && 'MoveTo' !== null ) {
+		OrganizeFromList( 'MoveFrom', 'MoveTo', listname, amount);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////M@XIM
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function WarPack() {
+    var Index, Resource, ResourceObject, Quantity, Chest = "ID", ResourceBag = "ID";
+// Name, Type, Color, Quantity, X Coord, Y Coord
+    var Items = [
+    ["Black Pearls", "0x0F7A", "-1", 100, 29, 97],
+    ["Blood Moss", "0x0F7B", "-1", 100, 29, 97],
+    ["Garlic", "0x0F84", "-1", 30, 29, 97],
+    ["Ginseng", "0x0F85", "-1", 30, 29, 97],
+    ["Mandrake Roots", "0x0F86", "-1", 120, 29, 97],
+    ["Nightshade", "0x0F88", "-1", 30, 29, 97],
+    ["Spider's Silk", "0x0F8D", "-1", 30, 29, 97],
+    ["Sulfurous Ash", "0x0F8C", "-1", 30, 29, 97]
+    ];
+    Orion.CharPrint(self, 1153, "Where is your WarPack?")
+    Orion.AddObject("Bag");
+    while (Orion.HaveTarget()) {
+        Orion.Wait(100);
+    }
+    Save(0);
+    Orion.OpenContainer("Bag", 1000);
+    Orion.OpenContainer(Chest, 1000);
+    Orion.OpenContainer(ResourceBag, 1000);
+    for (Index = 0; Index < Items.length; Index++) {
+        Resource = Orion.FindType(Items[Index][1], Items[Index][2], "Bag");
+        if (Resource.length != 0) {
+            ResourceObject = Orion.FindObject(Resource[0]);
+            if (Items[Index][3] > ResourceObject.Count()) {
+                Quantity = Items[Index][3] - ResourceObject.Count();
+            } else {
+                continue;
+            } 
+        } else {
+            Quantity = Items[Index][3];
+        }
+        Resource = Orion.FindType(Items[Index][1], Items[Index][2], ResourceBag);
+        if (Resource.length != 0) {
+            ResourceObject = Orion.FindObject(Resource[0]);
+            if (ResourceObject.Count() >= Quantity) {
+                if (Items[Index][3] != Quantity) {
+                    Orion.MoveItem(ResourceObject.Serial(), Quantity, "Bag");
+                } else {
+                    Orion.MoveItem(ResourceObject.Serial(), Quantity, "Bag", Items[Index][4], Items[Index][5], 0);
+                }
+                Save(0);
+                Orion.Wait(600);
+            } else {
+                Orion.Print("Items are finished " + Items[Index][0] + "!");
+                Orion.PlayWav("Alarm");
+                return;
+            }
+        } else {
+            Orion.Print("Items are finished " + Items[Index][0] + "!");
+            Orion.PlayWav("Alarm");
+            return;
+        }
+    }
+    Orion.CharPrint(self, 1153, "Completed WarPack!");
+}
+
+function CopyWarPack() {
+    var Item;
+    TextWindow.Clear();
+    while (!Player.Dead()) {
+        Orion.CharPrint("self", 1153, "What do you want to add?")
+        Orion.AddObject("Item");
+        while (Orion.HaveTarget()) {
+            Orion.Wait(100);
+        }
+        if (Orion.GetSerial("Item") != Player.Serial()) {
+            Item = Orion.FindObject("Item");
+            Orion.RequestName(Item.Serial(), 1000);
+            Orion.Print("�������� " + Item.Name() + "!");
+            TextWindow.Print("[\"" + Item.Name() + "\", \"" + Item.Graphic() + "\", \"" + Item.Color() + "\", " +  Item.Count() + ", " + Item.X() + ", " + Item.Y() + "],");
+        } else {
+            Orion.CharPrint("self", 1153, "Completed CopyWarPack!");
+            Orion.PlayWav("Alarm");
+            TextWindow.Open();
+            return;
+        }
+    }
+}
+
+function Save(a) {
+    var Time = Orion.Now() + 20000;
+    if (Orion.InJournal("World save has been initiated")) {
+        Orion.ClearJournal("World save has been initiated|backpack");
+        Orion.Click("backpack");
+        do {
+            Orion.Wait(120);
+        } while (!Orion.InJournal("backpack") && Orion.Now() < Time && !Player.Dead());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////AIMED
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function AddTypeToList(listName)
+{
+    //Make sure temp object doesnt exist and then add it by OA target.
+    Orion.RemoveObject('tempObject');
+    Orion.AddObject('tempObject');
+    Orion.Print(52, 'Target an object to add its type to ' + listName);
+    while(Orion.HaveTarget())
+    {
+        Orion.Wait(100);
+    }
+   
+    var tempObject = Orion.FindObject('tempObject');
+    if(tempObject == null)
+    {
+        Orion.Print(52, 'tempObject doesnt exist. Did you cancel your target?');
+        return;
+    }
+   
+    //Here we'll ask user to add comment/object name before adding it to list.
+    //This is nice to have to make object types recognizable within the list later
+    Orion.Print(52, 'Enter comment or type name for this object');
+    Orion.ClearJournal();
+    Orion.JournalIgnoreCase(true);
+    var commentString = 'default comment';
+    var waitDelay = 10000;
+    var waited = 0;
+    var msg = null;
+    while(waited < waitDelay)
+    {
+        for(var i = 0; i < Orion.JournalCount(); i++)
+        {
+            msg = Orion.JournalLine(i);
+            if(msg.Serial() == Player.Serial())
+            {
+                commentString = msg.Text();
+                waited = 10000;
+                break;
+            }
+        }
+        if(waited == waitDelay) break;
+        Orion.ClearJournal();
+        Orion.Wait(1000);
+        waited += 1000;
+    }
+    if(msg == null)
+        Orion.Print(52, '10 seconds expired, adding tempObject with default comment');
+    else
+        Orion.Print(52, commentString + ' added to ' + listName);
+       
+       
+    Orion.AddIgnoreList(listName, tempObject.Graphic(), tempObject.Color(), commentString);
+}
+
+//--#TargettingM@XIM
+////////////////////////////////////////////////////////////////////////////////////////////
+//LastATTACK
+/////
+/////
+/////
+/////
+/////Friar Enoch (Factavi) please try this
+/////
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Getting target by attacking player - working pefrectly
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function AttackNextPlayer()
+{
+    Orion.Ignore(self);
+    var target = Orion.FindType("-1", "-1", "ground", "human|near|live|ignorefriends", 18, "gray|criminal|orange|red");
+    if (target.length != 0)
+    {
+        Orion.Attack(target[0]);
+        Orion.Ignore(target[0]);
+    }
+    else
+    {
+        Orion.IgnoreReset();
+        Orion.Ignore(self);
+        target = Orion.FindType("-1", "-1", "ground", "human|near|live|ignorefriends", 18, "gray|criminal|orange|red");
+        if (target.length != 0)
+        {
+            Orion.Attack(target[0]);
+            Orion.Ignore(target[0]);
+        }
+    }
+}
+
+function PKAttackNextPlayer()
+{
+    Orion.Ignore(self);
+    var target = Orion.FindType("-1", "-1", "ground", "human|near|live|ignorefriends", 18, "gray|criminal|orange|red|innocent|blue");
+    if (target.length != 0)
+    {
+        Orion.Attack(target[0]);
+        Orion.Ignore(target[0]);
+    }
+    else
+    {
+        Orion.IgnoreReset();
+        Orion.Ignore(self);
+        target = Orion.FindType("-1", "-1", "ground", "human|near|live|ignorefriends", 18, "gray|criminal|orange|red|innocent|blue");
+        if (target.length != 0)
+        {
+            Orion.Attack(target[0]);
+            Orion.Ignore(target[0]);
+        }
+    }
+}
+
+function AttackNextMonster(){
+    var Target = Orion.FindType("!0x0190|!0x0191", "-1", "ground", "near|live", 18, "gray|red");
+    if (Target.length != 0) {
+        Orion.Attack(Target[0]);
+        Orion.Ignore(Target[0]);
+    } else {
+        Orion.IgnoreReset();
+        Target = Orion.FindType("!0x0190|!0x0191", "-1", "ground", "near|live", 18, "gray|red");
+        if (Target.length != 0) {
+            Orion.Attack(Target[0]);
+            Orion.Ignore(Target[0]);
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Throw spells by using lastattack - working pefrectly
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function TargetLast()
+{
+if (Orion.HaveTarget() && Orion.GetDistance(lastattack) <= 12)
+   Orion.TargetObject(lastattack);
+}
+
+function TargetSelf()
+{
+if (Orion.HaveTarget())
+   Orion.TargetObject(self);
+}
+
+//--#Magery Spells
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Spells :) - faster/easier to sort hotkeys
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function MagicArrow()
+{
+	Orion.Cast('Magic Arrow');
+}
+
+function Fireball()
+{
+	Orion.Cast('Fireball');
+}
+
+function Harm()
+{
+	Orion.Cast('Harm');
+}
+
+function FlameStrike()
+{
+	Orion.Cast('Flame Strike');
+}
+
+function EnergyBolt()
+{
+	Orion.Cast('Energy Bolt');
+}
+
+function Explosion()
+{
+	Orion.Cast('Explosion');
+}
+
+function Lightning()
+{
+	Orion.Cast('Lightning');
+}
+
+function MindBlast()
+{
+	Orion.Cast('Mind Blast');
+}
+
+function Paralyze()
+{
+	Orion.Cast('Paralyze');
+}
+
+function Poison()
+{
+	Orion.Cast('Poison');
+}
+
+function Clumsy()
+{
+	Orion.Cast('Clumsy');
+}
+
+function Weaken()
+{
+	Orion.Cast('Weaken');
+}
+
+function Curse()
+{
+	Orion.Cast('Curse');
+}
+
+function Dispel()
+{
+	Orion.Cast('Dispel');
+}
+
+function Teleport()
+{
+	Orion.Cast('Teleport');
+}
+
+function Reveal()
+{
+	Orion.Cast('Reveal');
+}
+
+function BladeSpirits()
+{
+	Orion.Cast('Blade Spirits');
+}
+
+function DispelField()
+{
+	Orion.Cast('Dispel Field');
+}
+
+function WallOfStone()
+{
+	Orion.Cast('Wall of Stone');
+}
+
+function FireField()
+{
+	Orion.Cast('Fire Field');
+}
+
+function ParalyzeField()
+{
+	Orion.Cast('Paralyze Field');
+}
+
+function PoisonField()
+{
+	Orion.Cast('Poison Field');
+}
+
+function EnergyField()
+{
+	Orion.Cast('Energy Field');
+}
+
+
+function MagicReflect()
+{
+	Orion.Cast('Magic Reflect');
+}
+
+function Heal()
+{
+	Orion.Cast('Heal');
+}
+
+function GreaterHeal()
+{
+	Orion.Cast('Greater Heal');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////MINI HEAL
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function MiniHeal()
+{
+      if (Player.Poisoned())
+	Orion.Cast('Cure', self);
+else
+	Orion.Cast('Heal', self);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////BIG HEAL
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function BigHeal()
+{
+      if (Player.Poisoned())
+	Orion.Cast('Cure', self);
+else
+	Orion.Cast('Greater Heal', self);
+}
+
+function ReactiveArmor()
+{
+	Orion.Cast('Reactive Armor');
+}
+
+function Cure()
+{
+	Orion.Cast('Cure');
+}
+
+function Bless()
+{
+	Orion.Cast('Bless');
+}
+
+function Protection()
+{
+	Orion.Cast('Protection');
+}
+
+function Agility()
+{
+	Orion.Cast('Agility');
+}
+
+function Invisibility()
+{
+	Orion.Cast('Invisibility');
+}
+
+function Ressurection()
+{
+	Orion.Cast("Ressurection");
+}       
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Working
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////but still need testing
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////  
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Teleport 12 tiles forward
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function tele()
+{
+    var value = 11;
+    var empty = 0;
+ 
+    var offset =
+    [
+        [empty, -value],        //direction = 0
+        [value, -value],        //direction = 1
+        [value, empty],     //direction = 2
+        [value, value],     //direction = 3
+        [empty, value],     //direction = 4
+        [-value, value],        //direction = 5
+        [-value, empty],        //direction = 6
+        [-value, -value]        //direction = 7
+    ];
+   
+    var xy = offset[Player.Direction() & 7];
+    Orion.WaitTargetTileRelative('0', xy[0], xy[1], Player.Z());
+    Orion.Cast('Teleport');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Dispel nearest/closest field
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function DispelFieldInFront()
+{
+    var field, fieldObject, index, fieldIndex;
+    var tile =
+    [
+        [Player.X(), Player.Y() - 1],
+        [Player.X() + 1, Player.Y() - 1],
+        [Player.X() + 1, Player.Y()],
+        [Player.X() + 1, Player.Y() + 1],
+        [Player.X(), Player.Y() + 1],
+        [Player.X() - 1, Player.Y() + 1],
+        [Player.X() - 1, Player.Y()],
+        [Player.X() - 1, Player.Y() - 1]
+    ];
+    field = Orion.FindType("0x0082|0x3967|0x0080|0x3956|0x3922", "-1", "ground", "item", 1);
+    if (field.length != 0)
+    {
+        for (index = 0; index < tile.length; index++)
+        {
+            if (Player.Direction() == index || Player.Direction() == (index + 128))
+            {
+                for (fieldIndex = 0; fieldIndex < field.length; fieldIndex++)
+                {
+                    fieldObject = Orion.FindObject(field[fieldIndex]);
+                    if (fieldObject.X() == tile[index][0] && fieldObject.Y() == tile[index][1])
+                    {
+                        Orion.WaitTargetObject(fieldObject.Serial());
+                        Orion.Cast("Dispel Field");
+                        return;
+                    }
+                }
+                Orion.CharPrint(self, 1153, "Before me there are no fields!")
+                break;
+            }
+        }
+    }
+}        
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Aimed Auto-Explosion potion, working 50/50
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function Expl()
+{
+    Orion.ClearJournal();
+    Orion.CancelWaitTarget();
+    Orion.UseType('0x0F0D');
+    WaitForTarget(1500, 10);
+    Orion.CancelTarget();
+    
+    //
+    Orion.WaitJournal('2', Orion.Now(), Orion.Now() + 4000);
+    Orion.Wait(250);// <<< SET BASED ON YOUR PING
+    Orion.UseType('0x0F0D');
+    WaitForTarget(1500, 10);
+    //
+    if (Orion.GetDistance('lasttarget') > 12)
+        ThrowAwayBomb();
+    else
+        Orion.TargetObject('lasttarget');
+    ThrowAwayBomb();
+}
+
+function ThrowAwayBomb()
+{
+    var dir = Player.Direction();
+        if(dir > 100)
+        dir -= 128;
+     
+        var rX = 0;
+        var rY = 0;
+     
+        switch(dir)
+        {
+            case 0:
+                rX = 0;
+                rY = 3;
+                break;
+            case 1:
+                rX = -3;
+                rY = 3;
+                break;
+            case 2:
+                rX = -3;
+                rY = 0;
+                break;
+            case 3:
+                rX = -3;
+                rY = -3;
+                break;
+            case 4:
+                rX = 0;
+                rY = -3;
+                break;
+            case 5:
+                rX = 3;
+                rY = -3;
+                break;
+            case 6:
+                rX = 3;
+                rY = 0;
+                break;
+            case 7:
+                rX = 3;
+                rY = 3;
+                break;
+            default:
+                rX = 3;
+                rY = 3;
+             
+        }
+        Orion.TargetTileRelative(0, rX, rY, 0);
+}
+function WaitForTarget(delay, sensitivity)
+{
+    var start = 0;
+    while(start < delay)
+    {
+        if(Orion.HaveTarget())
+            break;
+        Orion.Wait(sensitivity);
+        start += sensitivity;
+    }
+}
+
+function TargetNearestEnemy()
+{
+    var enemy = Orion.FindType("-1", "-1", ground, "human|near|live|mobile|ignoreself", 18, "orange");
+    var target = Orion.FindObject(enemy[0]);
+
+    Orion.CharPrint(self, '48', target.Name() + ' - '+ target.Hits('%') + '%');
+    Orion.RemoveHighlightCharacter(lasttarget);
+    Orion.AddHighlightCharacter(target.Serial(), '109' );
+    //Orion.CharPrint(target.Serial(), '48', target.Name());
+    Orion.ClientLastTarget(target.Serial());
+    Orion.GetStatus(['serial']);
+    Orion.TargetSystemSerial(target.Serial());
+}
+
+function FindNearestBlue()
+{	
+	Orion.Ignore('self');
+	var friends = Orion.GetFriendList();
+	for(var i = 0; i < friends.length; i++) {
+		Orion.Ignore(friends[i]);
+	}
+	var enemy = Orion.FindType('0xFFFFFF', '-1', ground, 'human|nearest|mobile|live', '14', 'red|blue|criminal|gray|');	
+	if ( !enemy.length )  	{
+//		Orion.Ignore('self');
+//		var friends = Orion.GetFriendList();
+//		for(var i = 0; i < friends.length; i++) {
+//			Orion.Ignore(friends[i]);
+//		}
+//		enemy = Orion.FindType('0xFFFFFF', '-1', ground, 'near|mobile', '18', 'gray|criminal|red|orange|blue|');	
+//		if ( !enemy.length )  	{
+			Orion.Print( '-1', 'no enemy found, resetting ignore list');
+			Orion.IgnoreReset();
+			return '';
+//		}
+	}
+	return enemy[0];
+}
+
+function TargetNextEnemyBlue()
+{
+			var serial = FindNearestBlue();
+			Orion.GetEnemiesStatus();
+		if(!serial.length) return;
+		var enemy = Orion.FindObject(serial);
+		var notoColor;
+		switch  (enemy.Notoriety() ) {
+			case 1: notoColor = 2119;
+					break;
+			case 3: notoColor = 906;
+					break;
+			case 6: notoColor = 33;
+					break;
+			default: notoColor = 48;
+		}
+		
+		Orion.CharPrint(self, notoColor, '[Enemy:] ' + enemy.Name() );
+		Orion.RemoveHighlightCharacter(lasttarget);
+		//Orion.CharPrint(enemy.Serial(), '48', enemy.Name());
+        Orion.AddHighlightCharacter(enemy.Serial(), '1152' );
+		Orion.ClientLastTarget(serial);
+		Orion.TargetSystemSerial(serial);
+		Orion.Ignore(serial);        
+	}
+	
+function TargetRelativeTileEnemy()
+	{
+if (Orion.HaveTarget() && Orion.GetDistance(lastattack) <= 10)
+		Orion.WaitTargetTileRelative(lastattack, 3, 0, 0);
+	}
+	
+function ScanDeaths()
+{
+Orion.ClearJournal()
+while (true)
+{
+        Orion.WaitJournal('soundecho: id=0x0423|soundecho: id=0x0315', 0, 0, 'sys')
+        Orion.Screenshot()
+        Orion.ClearJournal()
+}
+}
+
+function Hide()
+{
+    while (true){
+        if (Player.Hidden())
+        {
+            Orion.OptionAlwaysRun(false);
+            while (Player.Hidden())
+            {
+            }
+            Orion.OptionAlwaysRun(true);
+        }
+    }
+}
+
+function ScanDeaths()
+{
+Orion.ClearJournal()
+while (true)
+{
+        Orion.WaitJournal('soundecho: id=0x0423|soundecho: id=0x0315', 0, 0, 'sys')
+        Orion.Wait(300)
+        Orion.Screenshot()
+        Orion.ClearJournal()
+}
+}
+
+function DispelFieldInFront()
+{
+    var field, fieldObject, index, fieldIndex;
+    var tile =
+    [
+        [Player.X(), Player.Y() - 1],
+        [Player.X() + 1, Player.Y() - 1],
+        [Player.X() + 1, Player.Y()],
+        [Player.X() + 1, Player.Y() + 1],
+        [Player.X(), Player.Y() + 1],
+        [Player.X() - 1, Player.Y() + 1],
+        [Player.X() - 1, Player.Y()],
+        [Player.X() - 1, Player.Y() - 1]
+        [Player.X(), Player.Y() - 2],
+        [Player.X() + 2, Player.Y() - 2],
+        [Player.X() + 2, Player.Y()],
+        [Player.X() + 2, Player.Y() + 2],
+        [Player.X(), Player.Y() + 2],
+        [Player.X() - 2, Player.Y() + 2],
+        [Player.X() - 2, Player.Y()],
+        [Player.X() - 2, Player.Y() - 2]
+    ];
+    field = Orion.FindType("0x0082|0x3967|0x0080|0x3956|0x3922", "-1", "ground", "item", 1);
+    if (field.length != 0)
+    {
+        for (index = 0; index < tile.length; index++)
+        {
+            if (Player.Direction() == index || Player.Direction() == (index + 128))
+            {
+                for (fieldIndex = 0; fieldIndex < field.length; fieldIndex++)
+                {
+                    fieldObject = Orion.FindObject(field[fieldIndex]);
+                    if (fieldObject.X() == tile[index][0] && fieldObject.Y() == tile[index][1])
+                    {
+                      if (!Orion.HaveTarget()) {
+                        Orion.WaitTargetObject(fieldObject.Serial());
+                        Orion.Cast("Dispel Field");
+                        return;
+                      }
+                      else {
+                        Orion.TargetObject(fieldObject.Serial());
+
+                      }
+                    }
+                }
+                Orion.CharPrint(self, 1153, "Before me there are no fields!")
+                break;
+            }
+        }
+    }
+}
+
+function SelectTargetScrolling(forward)
+{
+    var lastInd, lastDist, highVal;
+
+    if (Orion.GetGlobal("forward") != String(forward))
+    {
+        Orion.SetGlobal("forward", String(forward));
+        Orion.IgnoreReset();
+        Orion.Ignore(Orion.ClientLastTarget());
+    }
+
+    for (var i = 0; i < 2; i++)
+    {
+        var mobArr = Orion.FindType("-1", "-1", ground, "live|ignoreself|ignorefriends|human", 18, "orange");
+
+        if (mobArr.length)
+        {
+            forward ? (highVal = 18, lastDist = 0) : (highVal = 0, lastDist = 18);
+
+            Orion.GetGlobal("lastDist") == "" ? lastDist = lastDist : lastDist = Number(Orion.GetGlobal("lastDist"));
+
+            for (var ii = 0; ii < mobArr.length; ii++)
+            {
+
+                var dist = Orion.GetDistance(mobArr[ii]);
+
+                if (forward && dist <= highVal && dist >= lastDist)
+                {
+                    highVal = dist;
+                    lastInd = ii;
+                }
+                else if (!forward && dist >= highVal && dist <= lastDist)
+                {
+                    highVal = dist;
+                    lastInd = ii;
+                }
+            }
+
+            if (lastInd != undefined)
+            {
+                Orion.SetGlobal("lastDist", highVal);
+                Orion.ClearHighlightCharacters();
+                //Orion.ClientLastAttack(mobArr[lastInd]);
+                Orion.ClientLastTarget(mobArr[lastInd]);
+                Orion.TargetSystemSerial(mobArr[lastInd]);
+                var currtar = Orion.FindObject(mobArr[lastInd]);
+                Orion.ClientLastTarget(mobArr[lastInd]);
+                Orion.CharPrint(Player.Serial(), '48', "Target:[" + currtar.Name()+ "]");
+                Orion.AddHighlightCharacter(mobArr[lastInd], '1152' );
+                Orion.AddDisplayTimer(101,30000, 'Top', 'Rectangle|Bar', currtar.Name(), 0, 0, '0xFFFF', 4, 'green');
+                Orion.Ignore(mobArr[lastInd]);
+                return;
+            }
+        }
+
+        if ((!mobArr.length && i == 0) || lastInd == undefined)
+        {
+            Orion.SetGlobal("lastDist", "");
+            Orion.IgnoreReset();
+        }
+    }
+
+    Orion.Print("No enemies!");
+}
+
+function SelectTargetScrollingBlue(forward)
+{
+    var lastInd, lastDist, highVal;
+		
+    if (Orion.GetGlobal("forward") != String(forward))
+    {
+        Orion.SetGlobal("forward", String(forward));
+        Orion.IgnoreReset();
+        Orion.Ignore(Orion.ClientLastTarget());
+    }
+
+    for (var i = 0; i < 2; i++)
+    {
+        var mobArr = Orion.FindType("-1", "-1", ground, "live|ignoreself|ignorefriends|human", 18, "blue");
+
+        if (mobArr.length)
+        {
+            forward ? (highVal = 18, lastDist = 0) : (highVal = 0, lastDist = 18);
+
+            Orion.GetGlobal("lastDist") == "" ? lastDist = lastDist : lastDist = Number(Orion.GetGlobal("lastDist"));
+
+            for (var ii = 0; ii < mobArr.length; ii++)
+            {
+
+                var dist = Orion.GetDistance(mobArr[ii]);
+
+                if (forward && dist <= highVal && dist >= lastDist)
+                {
+                    highVal = dist;
+                    lastInd = ii;
+                }
+                else if (!forward && dist >= highVal && dist <= lastDist)
+                {
+                    highVal = dist;
+                    lastInd = ii;
+                }
+            }
+
+            if (lastInd != undefined)
+            {
+                Orion.SetGlobal("lastDist", highVal);
+                Orion.ClearHighlightCharacters();
+                //Orion.ClientLastAttack(mobArr[lastInd]);
+                Orion.ClientLastTarget(mobArr[lastInd]);
+                Orion.TargetSystemSerial(mobArr[lastInd]);
+                var currtar = Orion.FindObject(mobArr[lastInd]);
+                Orion.ClientLastTarget(mobArr[lastInd]);
+                Orion.CharPrint(Player.Serial(), '2119', "Target:[" + currtar.Name()+ "]");
+                Orion.AddHighlightCharacter(mobArr[lastInd], '1152' );
+                Orion.AddDisplayTimer(101,30000, 'Top', 'Rectangle|Bar', currtar.Name(), 0, 0, '0xFFFF', 4, 'green');
+                Orion.Ignore(mobArr[lastInd]);
+                return;
+            }
+        }
+
+        if ((!mobArr.length && i == 0) || lastInd == undefined)
+        {
+            Orion.SetGlobal("lastDist", "");
+            Orion.IgnoreReset();
+        }
+    }
+
+    Orion.Print("No enemies!");
+}
+
+function AutoChugStrength()
+{
+    while(!Player.Dead())
+    while(!Player.Hidden())
+    if(!Orion.BuffExists(0x7567))    
+    {Orion.UseType('0x0F09','0x0000','backpack')
+    Orion.Wait('1500')}
+}
+	
+function AutoChugAgility()	
+{
+    while(!Player.Dead())
+    while(!Player.Hidden())
+    if(!Orion.BuffExists("Agility"))    
+    {Orion.UseType('0x0F08')
+    Orion.Wait('1500')}
+}
+	
+function AutoBox()        
+{
+    while (!Player.Dead())
+       if (Orion.BuffExists("Paralyze")){
+          Orion.UseType('0x09A9')
+          }
+          else
+          {
+         Orion.PauseScript
+         }
+         }
+ 
+function AutoBoxJournal()
+{
+while (true)
+{
+if (Orion.InJournal('Your attacker dealt a crippling nerve strike!'))
+{
+Orion.UseType(0x09A9);
+Orion.ClearJournal('Your attacker dealt a crippling nerve strike!');
+}
+if (Orion.InJournal('You cannot move!'))
+{
+Orion.UseType(0x09A9);
+Orion.ClearJournal('You cannot move!');
+}
+Orion.Wait(50);
+}        
+}         
+
+function AutoSeed()
+{
+	while (!Player.Dead())
+		if (Player.Hits() < 20){
+        Orion.UseType('0x1727')
+}
+}
+
+
+function AutoBarPopulate() {
+
+    var players = [Player.Serial()];
+
+    var offsetPlayersX = 30;
+    var offsetPlayersY = 530;
+
+    var offsetFriendsX = 1500;
+    var offsetFriendsY = 30;
+
+    var offsetEnemiesX = 5;
+    var offsetEnemiesY = 30;
+
+    var stepY = 60;
+
+    var mobArr = [];
+    var popArr = [];
+    var guildArr  = [];
+    var guildpopArr = [];
+    Orion.SetGlobal("BarClear",'false');
+    Orion.SetGlobal("BarRun",'true');
+
+    while(Orion.GetGlobal("BarRun") == 'true'){
+        mobArr = Orion.FindType("-1", "-1", ground, "live|ignoreself|ignorefriends|human", 25, "orange");
+        guildArr = Orion.FindType("-1", "-1", ground, "live|ignoreself|ignorefriends|human", 25, "green");
+        fullArr = Orion.FindType("-1", "-1", ground, "live|ignoreself|human", 25);
+        var friends = Orion.GetFriendList();
+        var enemies = Orion.GetEnemyList();
+        for (var i = 0; i < friends.length; i++)
+        {
+            if(fullArr.indexOf(friends[i]) != -1 && guildpopArr.indexOf(friends[i]) == -1){
+                Orion.ShowStatusbar(friends[i], offsetFriendsX, offsetFriendsY);
+                guildpopArr.push(friends[i]);
+                offsetFriendsY += stepY;
+            }
+        }
+        for (var i = 0; i < guildArr.length; i++)
+        {
+            if(guildpopArr.indexOf(guildArr[i]) == -1)
+            {
+              Orion.ShowStatusbar(guildArr[i], offsetFriendsX, offsetFriendsY);
+              guildpopArr.push(guildArr[i]);
+      	      offsetFriendsY += stepY;
+        	}
+        }
+        for (var i = 0; i < mobArr.length; i++)
+        {
+            if(popArr.indexOf(mobArr[i]) == -1)
+            {
+            Orion.ShowStatusbar(mobArr[i], offsetEnemiesX, offsetEnemiesY);
+            popArr.push(mobArr[i]);
+        	offsetEnemiesY += stepY;
+        	}
+        }
+        for (var i = 0; i < enemies.length; i++)
+        {
+            if(fullArr.indexOf(enemies[i]) != -1 && popArr.indexOf(enemies[i]) == -1){
+                Orion.ShowStatusbar(enemies[i], offsetEnemiesX, offsetEnemiesY);
+                popArr.push(enemies[i]);
+                offsetEnemiesY += stepY;
+            }
+        }
+    Orion.Wait(1000);
+    if(Orion.GetGlobal('BarClear') == 'true'){
+        for (var i = 0; i < popArr.length; i++)
+        {
+            Orion.CloseStatusbar(popArr[i]);
+        }
+        popArr = [];
+        for (var i = 0; i < guildpopArr.length; i++)
+        {
+            Orion.CloseStatusbar(guildpopArr[i]);
+        }
+        guildpopArr = [];
+        Orion.SetGlobal("BarClear",'false');
+        var offsetEnemiesX = 5;
+        var offsetEnemiesY = 30;
+        var offsetFriendsX = 1700;
+        var offsetFriendsY = 30;
+    }
+    }
+}
+
+function ClearBars(){
+    Orion.SetGlobal("BarClear",'true');
+}
+function ToggleAutoBars(){
+    if(Orion.GetGlobal("BarRun") == 'true'){
+        Orion.SetGlobal("BarClear",'true');
+        Orion.SetGlobal("BarRun",'false');
+        Orion.Print("Stopping Auto Bars.");
+    }
+    else {
+        Orion.SetGlobal("BarRun",'true');
+        Orion.Print("Starting Auto Bars.");
+        AutoBarPopulate();
+    }
+}
+
+function SetCaughtLT(){
+    Orion.ClientLastTarget(Orion.GetGlobal("CaughtSerial"));
+}
+
+function SendSerial() {
+  var LT = Orion.ClientLastTarget();
+  //LT = LT * 14;
+  Orion.SayGuild("R;" + LT)
+}
+
+function CatchSerial(){
+  Orion.SetGlobal("SerialCatch","true")
+  while(Orion.GetGlobal("SerialCatch") == "true"){
+    var caught = Orion.WaitJournal("R;",Orion.Now(),0);
+    if (caught != null){
+      caught = caught.Text();
+      caught = caught.split(";");
+      caught = caught[1];
+      caught = Number(caught);
+      //caught = caught / 14;
+      Orion.ClientLastTarget(caught);
+      Orion.SetGlobal("CaughtSerial",caught);
+      Orion.AddHighlightCharacter(caught,'1152');
+      //Orion.Print(Orion.GetGlobal("CaughtSerial"));
+    }
+    Orion.Wait(500)
+  }
+}
